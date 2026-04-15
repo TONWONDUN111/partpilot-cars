@@ -739,6 +739,41 @@ function renderStats(parts, networks, requests, networkMap) {
   approvedCount.textContent = String(networks.filter((network) => network.approval === "approved").length);
 }
 
+async function renderCarContentFeed() {
+  const container = document.querySelector("#car-content-feed");
+  if (!container) {
+    return;
+  }
+
+  try {
+    const response = await fetch("content_feed.json", { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error("feed unavailable");
+    }
+    const items = await response.json();
+    if (!Array.isArray(items) || !items.length) {
+      container.innerHTML = '<div class="empty-state">No guides published yet.</div>';
+      return;
+    }
+
+    container.innerHTML = items.slice(0, 6).map((item) => `
+      <article class="part-card">
+        <header>
+          <div>
+            <span class="pill">Guide</span>
+            <h3>${item.title}</h3>
+          </div>
+          <span class="meta-chip">${item.published}</span>
+        </header>
+        <p>${item.summary || "Auto-published buying guide."}</p>
+        <a class="button button-secondary" href="${item.url}">Read guide</a>
+      </article>
+    `).join("");
+  } catch {
+    container.innerHTML = '<div class="empty-state">Guide feed unavailable.</div>';
+  }
+}
+
 function renderParts(networks) {
   const container = document.querySelector("#parts-grid");
   const vehicleFilter = document.querySelector("#vehicle-filter");
@@ -898,6 +933,7 @@ function init() {
   setupAdminMode();
   setupMarketPage();
   setupRepairPage();
+  renderCarContentFeed();
 }
 
 init();
