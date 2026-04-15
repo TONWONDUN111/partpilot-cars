@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PartPilot Market</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="market">
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">PP</span>
+        <span>
+          <strong>PartPilot Market</strong>
+          <small>Global car parts affiliate storefront</small>
+        </span>
+      </a>
+      <nav class="nav">
+        <a class="nav-link active" href="index.html">Car Parts</a>
+        <a class="nav-link" href="dogs.html">Dog Shop</a>
+        <a class="nav-link" href="repair-help.html">Repair Help</a>
+        <a class="nav-link" href="about.html">About</a>
+      </nav>
+    </header>
+
+    <div class="disclosure-banner">
+      <p>As an eBay Partner Network affiliate, we earn commissions on qualifying purchases at no extra cost to you. <a href="privacy.html">Privacy Policy</a> &middot; <a href="about.html">About</a></p>
+    </div>
+
+    <main>
+      <section class="hero hero-market">
+        <div>
+          <p class="eyebrow">eBay-powered car parts storefront</p>
+          <h1>Sell smarter car parts from multiple affiliate programs.</h1>
+          <p class="hero-copy">Show buyers the best price, your estimated payout, and a direct buy button. Use one brand, one site, and multiple approved affiliate relationships instead of juggling throwaway accounts.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#catalog">Browse catalog</a>
+            <a class="button button-secondary" href="repair-help.html">Open repair help page</a>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <h2>How this is set up</h2>
+          <ul class="check-list">
+            <li>Affiliate-ready source board for eBay, RockAuto, PartsGeek, and more</li>
+            <li>Editable commission profile so you can track estimated earnings per click and sale</li>
+            <li>Repair help intake page to capture part-specific questions from buyers anywhere</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="panel stats-panel">
+        <div>
+          <span class="stat-label">Visible listings</span>
+          <strong id="listing-count">0</strong>
+        </div>
+        <div>
+          <span class="stat-label">Affiliate sources</span>
+          <strong id="network-count">0</strong>
+        </div>
+        <div>
+          <span class="stat-label">Top est. payout</span>
+          <strong id="top-payout">$0.00</strong>
+        </div>
+        <div>
+          <span class="stat-label">Approved networks</span>
+          <strong id="approved-count">0</strong>
+        </div>
+      </section>
+
+      <section class="panel private-panel">
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">Private mode</p>
+            <h2>Affiliate controls stay local to this browser</h2>
+          </div>
+          <button id="admin-toggle" class="button button-secondary" type="button">Open private affiliate panel</button>
+        </div>
+        <p class="section-copy">Affiliate URLs, approval status, and payout settings are stored only in this browser on this machine. They are hidden from the storefront until you open private admin mode.</p>
+      </section>
+
+      <section class="panel approval-panel admin-only" hidden>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Approval center</p>
+            <h2>Official network links and launch checklist</h2>
+          </div>
+        </div>
+        <div class="approval-grid">
+          <div>
+            <p class="section-copy">Everything here is set for you to finish approvals cleanly. Use the official signup link, mark your approval status, and paste the affiliate or destination URL you want buyers to hit once the network approves you.</p>
+            <ul class="stack-list">
+              <li>Apply using the official signup link for each network.</li>
+              <li>After approval, paste your tracked affiliate URL or storefront URL.</li>
+              <li>Listing buttons will switch from “Apply now” to “Buy through affiliate link” automatically.</li>
+            </ul>
+          </div>
+          <div class="approval-summary" id="approval-summary"></div>
+        </div>
+      </section>
+
+      <section class="layout-grid">
+        <section class="panel controls-panel" id="catalog">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Catalog controls</p>
+              <h2>Select your vehicle and part</h2>
+            </div>
+          </div>
+          <div class="control-grid">
+            <label>
+              Select your car
+              <select id="vehicle-filter"></select>
+            </label>
+            <label>
+              Select your part
+              <select id="part-filter"></select>
+            </label>
+            <label>
+              Affiliate source
+              <select id="source-filter"></select>
+            </label>
+            <label>
+              Sort by
+              <select id="sort-filter">
+                <option value="featured">Featured</option>
+                <option value="price-asc">Lowest price</option>
+                <option value="price-desc">Highest price</option>
+                <option value="payout-desc">Highest payout</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <aside class="panel commission-panel admin-only" hidden>
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Commission and links</p>
+              <h2>What we get paid and where buyers go</h2>
+            </div>
+          </div>
+          <p class="section-copy">Set payout rate, approval status, official signup path, and your live destination URL for each network. Cards and listing buttons update instantly.</p>
+          <div id="network-editor" class="network-editor"></div>
+          <p class="fine-print">Estimated payout is calculated as <strong>price × your rate</strong>. Until a network is approved and has a destination URL, the listing buttons will point users to the official apply/signup page instead.</p>
+        </aside>
+      </section>
+
+      <section class="panel network-panel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Affiliate stack</p>
+            <h2>Approved network board</h2>
+          </div>
+        </div>
+        <div id="network-cards" class="network-grid"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Live-style listings</p>
+            <h2>Featured car parts</h2>
+          </div>
+          <a class="text-link" href="repair-help.html">Need a custom repair quote?</a>
+        </div>
+        <div id="parts-grid" class="parts-grid"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">Social promo kit</p>
+            <h2>Post and drive traffic</h2>
+          </div>
+        </div>
+        <ul class="stack-list">
+          <li>Instagram post idea: "Need [PART]? Tap our link to find fitment + price in seconds."</li>
+          <li>TikTok idea: "Watch me find the exact part for this [CAR] in under 15 seconds."</li>
+          <li>Facebook Group idea: "I built a clean parts finder to compare prices fast. Try it here."</li>
+        </ul>
+        <div class="hero-actions">
+          <a class="button button-secondary" target="_blank" rel="noreferrer" href="https://www.instagram.com/">Open Instagram</a>
+          <a class="button button-secondary" target="_blank" rel="noreferrer" href="https://www.tiktok.com/">Open TikTok</a>
+          <a class="button button-secondary" target="_blank" rel="noreferrer" href="https://www.facebook.com/">Open Facebook</a>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span>&copy; 2026 PartPilot Market. All rights reserved.</span>
+        <nav class="footer-nav">
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="repair-help.html">Repair Help</a>
+        </nav>
+        <p class="fine-print footer-disclosure">As an eBay Partner Network member and affiliate, we earn commissions on qualifying purchases. Product prices and availability are subject to change.</p>
+      </div>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

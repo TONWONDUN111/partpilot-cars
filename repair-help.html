@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PartPilot Repair Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="repair">
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">PP</span>
+        <span>
+          <strong>PartPilot Market</strong>
+          <small>Global car parts affiliate storefront</small>
+        </span>
+      </a>
+      <nav class="nav">
+        <a class="nav-link" href="index.html">Car Parts</a>
+        <a class="nav-link" href="dogs.html">Dog Shop</a>
+        <a class="nav-link active" href="repair-help.html">Repair Help</a>
+        <a class="nav-link" href="about.html">About</a>
+      </nav>
+    </header>
+
+    <div class="disclosure-banner">
+      <p>As an eBay Partner Network affiliate, we earn commissions on qualifying purchases at no extra cost to you. <a href="privacy.html">Privacy Policy</a> &middot; <a href="about.html">About</a></p>
+    </div>
+
+    <main>
+      <section class="hero hero-repair">
+        <div>
+          <p class="eyebrow">Repair intake</p>
+          <h1>Collect part details and repair questions from anywhere.</h1>
+          <p class="hero-copy">Use this page to capture the car, the symptom, the part needed, and any extra detail the buyer wants to add. Everything saves in the browser so you can prototype the workflow before wiring a real backend.</p>
+        </div>
+        <aside class="hero-panel">
+          <h2>Best use cases</h2>
+          <ul class="check-list">
+            <li>Custom “find my part” requests</li>
+            <li>Repair diagnosis leads</li>
+            <li>Pre-installation questions for buyers in any state</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="layout-grid repair-layout">
+        <section class="panel form-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Lead form</p>
+              <h2>Repair help request</h2>
+            </div>
+          </div>
+          <form id="repair-form" class="repair-form">
+            <label>
+              Name
+              <input name="name" required placeholder="Full name">
+            </label>
+            <label>
+              Email or phone
+              <input name="contact" required placeholder="Email or mobile number">
+            </label>
+            <label>
+              Vehicle year
+              <input name="year" placeholder="2016">
+            </label>
+            <label>
+              Make
+              <input name="make" placeholder="Toyota">
+            </label>
+            <label>
+              Model
+              <input name="model" placeholder="Camry">
+            </label>
+            <label>
+              Part needed
+              <input name="part" required placeholder="Alternator, window regulator, brake kit...">
+            </label>
+            <label>
+              What is happening?
+              <textarea name="symptom" rows="4" required placeholder="Tell us the symptoms or what failed."></textarea>
+            </label>
+            <label>
+              Add more repair detail
+              <textarea name="details" rows="5" placeholder="Any extra repair detail, diagnostic codes, photos link, VIN, urgency, shipping country, or install questions."></textarea>
+            </label>
+            <label>
+              Budget range
+              <input name="budget" placeholder="$100-$250">
+            </label>
+            <label>
+              Shipping country / region
+              <input name="location" placeholder="USA, Canada, UK, etc.">
+            </label>
+            <div class="form-actions">
+              <button class="button button-primary" type="submit">Save request</button>
+              <button class="button button-secondary" type="reset">Clear</button>
+            </div>
+          </form>
+        </section>
+
+        <aside class="panel tips-panel">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Workflow</p>
+              <h2>How to monetize this page</h2>
+            </div>
+          </div>
+          <ul class="stack-list">
+            <li>Route qualified requests to the cheapest matching affiliate listing.</li>
+            <li>Offer a paid consultation or install referral after the form is submitted.</li>
+            <li>Add WhatsApp, Telegram, or email automation later for instant follow-up.</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Saved entries</p>
+            <h2>Recent repair requests</h2>
+          </div>
+          <button id="clear-requests" class="button button-secondary" type="button">Clear saved requests</button>
+        </div>
+        <div id="repair-requests" class="request-grid"></div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span>&copy; 2026 PartPilot Market. All rights reserved.</span>
+        <nav class="footer-nav">
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="repair-help.html">Repair Help</a>
+        </nav>
+        <p class="fine-print footer-disclosure">As an eBay Partner Network member and affiliate, we earn commissions on qualifying purchases. Product prices and availability are subject to change.</p>
+      </div>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
