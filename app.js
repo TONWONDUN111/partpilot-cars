@@ -416,11 +416,111 @@ const NETWORKS_KEY = "partpilot-networks";
 const REQUESTS_KEY = "partpilot-repair-requests";
 const ADMIN_MODE_KEY = "partpilot-admin-open";
 
+const CAR_MANUFACTURERS = [
+  { name: "Honda", query: "Honda", line: "Accord, Civic, CR-V", iconSlug: "honda", domain: "honda.com" },
+  { name: "Toyota", query: "Toyota", line: "Camry, Tacoma, Avalon", iconSlug: "toyota", domain: "toyota.com" },
+  { name: "Ford", query: "Ford", line: "F-150, Fusion, Focus", iconSlug: "ford", domain: "ford.com" },
+  { name: "Chevy", query: "Chevy", line: "Silverado, Malibu, Cruze", iconSlug: "chevrolet", domain: "chevrolet.com" },
+  { name: "Ram", query: "Ram", line: "1500 truck parts", iconSlug: "ram", domain: "ramtrucks.com" },
+  { name: "Jeep", query: "Jeep", line: "Grand Cherokee", iconSlug: "jeep", domain: "jeep.com" },
+  { name: "Hyundai", query: "Hyundai", line: "Sonata, Elantra", iconSlug: "hyundai", domain: "hyundai.com" },
+  { name: "Subaru", query: "Subaru", line: "WRX performance", iconSlug: "subaru", domain: "subaru.com" },
+];
+
+const CAR_CATEGORY_ICONS = {
+  Brakes: "🛑",
+  Body: "🚘",
+  Electrical: "🔋",
+  Suspension: "🛞",
+  Lighting: "💡",
+  Ignition: "⚡",
+  Maintenance: "🧰",
+  HVAC: "❄️",
+  Cooling: "🌡️",
+  Exhaust: "💨",
+  Performance: "🏁",
+};
+
 function currency(value) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(value);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function brandImage(label, sublabel, start, end) {
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" role="img" aria-label="${escapeHtml(label)}">
+      <defs>
+        <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stop-color="${start}" />
+          <stop offset="100%" stop-color="${end}" />
+        </linearGradient>
+      </defs>
+      <rect width="600" height="360" rx="36" fill="url(#g)" />
+      <circle cx="500" cy="80" r="90" fill="rgba(255,255,255,0.12)" />
+      <circle cx="120" cy="300" r="120" fill="rgba(255,255,255,0.08)" />
+      <text x="44" y="170" fill="#ffffff" font-family="Arial, sans-serif" font-size="58" font-weight="700">${escapeHtml(label)}</text>
+      <text x="46" y="224" fill="rgba(255,255,255,0.86)" font-family="Arial, sans-serif" font-size="26">${escapeHtml(sublabel)}</text>
+    </svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+function faviconUrl(domain) {
+  return `https://www.google.com/s2/favicons?sz=256&domain_url=https://${domain}`;
+}
+
+function simpleIconUrl(slug) {
+  return `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${slug}.svg`;
+}
+
+function manufacturerLogo(manufacturer) {
+  if (manufacturer?.iconSlug) {
+    return simpleIconUrl(manufacturer.iconSlug);
+  }
+  if (manufacturer?.domain) {
+    return faviconUrl(manufacturer.domain);
+  }
+  return brandImage(manufacturer?.name || "Brand", manufacturer?.line || "", "#006d77", "#f2a541");
+}
+
+function productIllustration(primary, secondary, emoji, start, end) {
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" role="img" aria-label="${escapeHtml(primary)}">
+      <defs>
+        <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stop-color="${start}" />
+          <stop offset="100%" stop-color="${end}" />
+        </linearGradient>
+      </defs>
+      <rect width="600" height="360" rx="36" fill="url(#g)" />
+      <circle cx="508" cy="82" r="90" fill="rgba(255,255,255,0.12)" />
+      <circle cx="118" cy="300" r="120" fill="rgba(255,255,255,0.08)" />
+      <text x="58" y="168" font-size="110">${emoji}</text>
+      <text x="58" y="248" fill="#ffffff" font-family="Arial, sans-serif" font-size="42" font-weight="700">${escapeHtml(primary)}</text>
+      <text x="58" y="290" fill="rgba(255,255,255,0.86)" font-family="Arial, sans-serif" font-size="24">${escapeHtml(secondary)}</text>
+    </svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+function manufacturerFromFitment(fitment) {
+  const match = CAR_MANUFACTURERS.find((item) => fitment.toLowerCase().includes(item.query.toLowerCase()));
+  return match?.name || "Vehicle";
+}
+
+function carArtwork(part) {
+  const manufacturer = manufacturerFromFitment(part.fitment);
+  const emoji = CAR_CATEGORY_ICONS[part.category] || "🚗";
+  return productIllustration(part.category, manufacturer, emoji, "#006d77", "#22526d");
 }
 
 function loadNetworks() {
@@ -739,6 +839,31 @@ function renderStats(parts, networks, requests, networkMap) {
   approvedCount.textContent = String(networks.filter((network) => network.approval === "approved").length);
 }
 
+function renderManufacturerGrid() {
+  const container = document.querySelector("#manufacturer-grid");
+  const vehicleSearch = document.querySelector("#vehicle-search");
+  if (!container || !vehicleSearch) {
+    return;
+  }
+
+  container.innerHTML = CAR_MANUFACTURERS.map((item) => `
+    <button class="logo-card" type="button" data-manufacturer="${item.query}">
+      <img src="${manufacturerLogo(item)}" alt="${item.name} manufacturer logo" onerror="this.onerror=null;this.src='${brandImage(item.name, item.line, "#006d77", "#f2a541")}';">
+      <strong>${item.name}</strong>
+      <span>${item.line}</span>
+    </button>
+  `).join("");
+
+  container.querySelectorAll("[data-manufacturer]").forEach((button) => {
+    button.addEventListener("click", () => {
+      vehicleSearch.value = button.dataset.manufacturer || "";
+      container.querySelectorAll(".logo-card").forEach((card) => card.classList.remove("is-active"));
+      button.classList.add("is-active");
+      vehicleSearch.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  });
+}
+
 async function renderCarContentFeed() {
   const container = document.querySelector("#car-content-feed");
   if (!container) {
@@ -776,25 +901,45 @@ async function renderCarContentFeed() {
 
 function renderParts(networks) {
   const container = document.querySelector("#parts-grid");
+  const vehicleSearch = document.querySelector("#vehicle-search");
   const vehicleFilter = document.querySelector("#vehicle-filter");
   const partFilter = document.querySelector("#part-filter");
   const sourceFilter = document.querySelector("#source-filter");
   const sortFilter = document.querySelector("#sort-filter");
-  if (!container || !vehicleFilter || !partFilter || !sourceFilter || !sortFilter) {
+  if (!container || !vehicleSearch || !vehicleFilter || !partFilter || !sourceFilter || !sortFilter) {
     return;
   }
 
   const networkMap = getNetworkMap(networks);
+  const vehicleSearchValue = vehicleSearch.value.trim().toLowerCase();
   const vehicleValue = vehicleFilter.value;
   const partValue = partFilter.value;
   const sourceValue = sourceFilter.value;
   const sortValue = sortFilter.value;
+  const hasActiveSearch = Boolean(
+    vehicleSearchValue ||
+    vehicleValue !== "all" ||
+    partValue !== "all" ||
+    sourceValue !== "all"
+  );
+
+  if (!hasActiveSearch) {
+    container.innerHTML = `
+      <div class="search-empty">
+        <h3>Start with the vehicle</h3>
+        <p>Choose a manufacturer tile or type the make, model, or part to reveal matching listings. The storefront stays clean until a shopper actually starts searching.</p>
+      </div>
+    `;
+    return;
+  }
 
   let filtered = PARTS.filter((part) => {
+    const searchableText = `${part.name} ${part.fitment} ${part.category}`.toLowerCase();
+    const matchesVehicleSearch = !vehicleSearchValue || searchableText.includes(vehicleSearchValue);
     const matchesVehicle = vehicleValue === "all" || part.fitment === vehicleValue;
     const matchesPart = partValue === "all" || part.category === partValue;
     const matchesSource = sourceValue === "all" || part.source === sourceValue;
-    return matchesVehicle && matchesPart && matchesSource;
+    return matchesVehicleSearch && matchesVehicle && matchesPart && matchesSource;
   });
 
   filtered = filtered.sort((left, right) => {
@@ -817,6 +962,9 @@ function renderParts(networks) {
 
   container.innerHTML = filtered.map((part) => `
     <article class="part-card">
+      <div class="card-media">
+        <img src="${carArtwork(part)}" alt="${manufacturerFromFitment(part.fitment)} ${part.category} search tile">
+      </div>
       <header>
         <div>
           <span class="pill">${part.badge}</span>
@@ -839,11 +987,12 @@ function renderParts(networks) {
 }
 
 function setupMarketPage() {
+  const vehicleSearch = document.querySelector("#vehicle-search");
   const vehicleFilter = document.querySelector("#vehicle-filter");
   const partFilter = document.querySelector("#part-filter");
   const sourceFilter = document.querySelector("#source-filter");
   const sortFilter = document.querySelector("#sort-filter");
-  if (!vehicleFilter || !partFilter || !sourceFilter || !sortFilter) {
+  if (!vehicleSearch || !vehicleFilter || !partFilter || !sourceFilter || !sortFilter) {
     return;
   }
 
@@ -853,6 +1002,7 @@ function setupMarketPage() {
   buildSelectOptions(vehicleFilter, [...new Set(PARTS.map((part) => part.fitment))], "All vehicles");
   buildSelectOptions(partFilter, [...new Set(PARTS.map((part) => part.category))], "All part types");
   buildSelectOptions(sourceFilter, [...new Set(PARTS.map((part) => part.source))], "All sources");
+  renderManufacturerGrid();
 
   const rerender = () => {
     networks = loadNetworks();
@@ -864,7 +1014,7 @@ function setupMarketPage() {
     renderStats(PARTS, networks, requests, networkMap);
   };
 
-  [vehicleFilter, partFilter, sourceFilter, sortFilter].forEach((element) => {
+  [vehicleSearch, vehicleFilter, partFilter, sourceFilter, sortFilter].forEach((element) => {
     element.addEventListener("input", rerender);
     element.addEventListener("change", rerender);
   });
