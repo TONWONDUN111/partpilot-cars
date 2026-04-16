@@ -830,7 +830,7 @@ function renderParts(networks) {
         <span class="price-chip">Est. payout ${currency(estimatedPayout(part, networkMap))}</span>
       </div>
       <div class="meta-row">
-        <span class="meta-chip">${part.source}</span>
+        <a class="meta-chip text-link" href="${destinationUrl(part, networkMap)}" target="${destinationUrl(part, networkMap) === "#" ? "_self" : "_blank"}" rel="noreferrer">Retailer: ${networkMap[part.networkId]?.name || part.source}</a>
         <span class="meta-chip">Rate ${((networkMap[part.networkId]?.rate || 0) * 100).toFixed(1)}%</span>
       </div>
       <a class="button button-primary" href="${destinationUrl(part, networkMap)}" target="_blank" rel="noreferrer">${ctaLabel(part, networkMap)}</a>
