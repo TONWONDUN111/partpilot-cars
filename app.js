@@ -493,9 +493,9 @@ function manufacturerLogo(manufacturer) {
   return brandImage(manufacturer?.name || "Brand", manufacturer?.line || "", "#006d77", "#f2a541");
 }
 
-function productIllustration(primary, secondary, emoji, start, end) {
+function productIllustration(emoji, category, badge, start, end) {
   const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" role="img" aria-label="${escapeHtml(primary)}">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" role="img" aria-label="${escapeHtml(category)}">
       <defs>
         <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stop-color="${start}" />
@@ -503,11 +503,16 @@ function productIllustration(primary, secondary, emoji, start, end) {
         </linearGradient>
       </defs>
       <rect width="600" height="360" rx="36" fill="url(#g)" />
-      <circle cx="508" cy="82" r="90" fill="rgba(255,255,255,0.12)" />
-      <circle cx="118" cy="300" r="120" fill="rgba(255,255,255,0.08)" />
-      <text x="58" y="168" font-size="110">${emoji}</text>
-      <text x="58" y="248" fill="#ffffff" font-family="Arial, sans-serif" font-size="42" font-weight="700">${escapeHtml(primary)}</text>
-      <text x="58" y="290" fill="rgba(255,255,255,0.86)" font-family="Arial, sans-serif" font-size="24">${escapeHtml(secondary)}</text>
+      <circle cx="490" cy="74" r="82" fill="rgba(255,255,255,0.12)" />
+      <circle cx="112" cy="302" r="128" fill="rgba(255,255,255,0.08)" />
+      <rect x="74" y="84" width="452" height="192" rx="28" fill="rgba(255,255,255,0.14)" />
+      <rect x="112" y="138" width="220" height="84" rx="22" fill="rgba(255,255,255,0.16)" />
+      <circle cx="398" cy="182" r="58" fill="rgba(255,255,255,0.18)" />
+      <text x="171" y="212" font-size="84">${emoji}</text>
+      <rect x="76" y="286" width="154" height="36" rx="18" fill="rgba(255,255,255,0.16)" />
+      <text x="98" y="311" fill="#ffffff" font-family="Arial, sans-serif" font-size="18" font-weight="700">${escapeHtml(category)}</text>
+      <rect x="248" y="286" width="182" height="36" rx="18" fill="rgba(255,255,255,0.12)" />
+      <text x="270" y="311" fill="rgba(255,255,255,0.9)" font-family="Arial, sans-serif" font-size="18">${escapeHtml(badge)}</text>
     </svg>`;
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
@@ -517,10 +522,13 @@ function manufacturerFromFitment(fitment) {
   return match?.name || "Vehicle";
 }
 
+function manufacturerInfoFromFitment(fitment) {
+  return CAR_MANUFACTURERS.find((item) => fitment.toLowerCase().includes(item.query.toLowerCase())) || null;
+}
+
 function carArtwork(part) {
-  const manufacturer = manufacturerFromFitment(part.fitment);
   const emoji = CAR_CATEGORY_ICONS[part.category] || "🚗";
-  return productIllustration(part.category, manufacturer, emoji, "#006d77", "#22526d");
+  return productIllustration(emoji, part.category, part.badge, "#006d77", "#22526d");
 }
 
 function loadNetworks() {
@@ -964,6 +972,9 @@ function renderParts(networks) {
     <article class="part-card">
       <div class="card-media">
         <img src="${carArtwork(part)}" alt="${manufacturerFromFitment(part.fitment)} ${part.category} search tile">
+        <span class="media-badge">
+          <img src="${manufacturerLogo(manufacturerInfoFromFitment(part.fitment))}" alt="${manufacturerFromFitment(part.fitment)} logo" onerror="this.onerror=null;this.src='${brandImage(manufacturerFromFitment(part.fitment), part.category, "#006d77", "#f2a541")}';">
+        </span>
       </div>
       <header>
         <div>
